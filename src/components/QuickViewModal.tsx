@@ -15,6 +15,8 @@ interface QuickViewModalProps {
 export function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps) {
   const addItem = useCartStore((state) => state.addItem);
   const [selectedSize, setSelectedSize] = useState('M');
+  const [isHovering, setIsHovering] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
 
   if (!product) return null;
 
@@ -47,8 +49,26 @@ export function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps
               <X size={20} />
             </button>
 
-            <div className="w-full md:w-1/2 h-[40vh] md:h-[60vh] bg-[#111] overflow-hidden">
-              <img 
+            <div 
+              className="w-full md:w-1/2 h-[40vh] md:h-[60vh] bg-[#111] overflow-hidden relative cursor-crosshair"
+              onMouseMove={(e) => {
+                const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+                const x = ((e.clientX - left) / width) * 100;
+                const y = ((e.clientY - top) / height) * 100;
+                setMousePos({ x, y });
+              }}
+              onMouseEnter={() => setIsHovering(true)}
+              onMouseLeave={() => {
+                setIsHovering(false);
+                setTimeout(() => setMousePos({ x: 50, y: 50 }), 300);
+              }}
+            >
+              <motion.img 
+                animate={{ scale: isHovering ? 2.2 : 1 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                style={{
+                  transformOrigin: isHovering ? `${mousePos.x}% ${mousePos.y}%` : '50% 50%'
+                }}
                 src={product.image} 
                 alt={product.name} 
                 className="w-full h-full object-cover"

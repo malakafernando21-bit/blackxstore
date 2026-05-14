@@ -32,6 +32,9 @@ export default function ProductDetail() {
   const [isFittingRoomOpen, setIsFittingRoomOpen] = useState(false);
   const containerRef = useRef(null);
 
+  const [isHovering, setIsHovering] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
@@ -84,20 +87,35 @@ export default function ProductDetail() {
 
            <motion.div 
              style={{ y: y1 }} 
-             className="absolute inset-0 w-full h-[120%] -top-[10%] left-0 z-0"
+             className="absolute inset-0 w-full h-[120%] -top-[10%] left-0 z-0 overflow-hidden cursor-crosshair"
+             onMouseMove={(e) => {
+               const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+               const x = ((e.clientX - left) / width) * 100;
+               const y = ((e.clientY - top) / height) * 100;
+               setMousePos({ x, y });
+             }}
+             onMouseEnter={() => setIsHovering(true)}
+             onMouseLeave={() => {
+               setIsHovering(false);
+               setTimeout(() => setMousePos({ x: 50, y: 50 }), 300);
+             }}
            >
              <motion.img 
-               animate={{ 
-                 scale: [1, 1.05, 1],
-               }}
-               transition={{
+               animate={isHovering ? { scale: 2.2 } : { scale: [1, 1.05, 1] }}
+               transition={isHovering ? { duration: 0.3, ease: "easeOut" } : {
                  duration: 20,
                  repeat: Infinity,
                  ease: "linear"
                }}
+               style={{
+                 transformOrigin: isHovering ? `${mousePos.x}% ${mousePos.y}%` : '50% 50%'
+               }}
                src={product.image} 
                alt={product.name} 
-               className="w-full h-full object-cover brightness-75 transition-all duration-1000 hover:brightness-100 cursor-none" 
+               className={cn(
+                 "w-full h-full object-cover transition-colors duration-500", 
+                 isHovering ? "brightness-100" : "brightness-75"
+               )} 
              />
            </motion.div>
            

@@ -9,14 +9,16 @@ import { QuickViewModal } from "@/components/QuickViewModal";
 
 const CylinderGallery = () => {
   const images = [
-    "https://images.unsplash.com/photo-1509319117193-57bab727e09d?q=80&w=600&auto=format&fit=crop", 
-    "https://images.unsplash.com/photo-1508243529287-e21914733111?q=80&w=600&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1550246140-5119ae4790b8?q=80&w=600&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1588665046200-a548b81db8b5?q=80&w=600&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1507314986167-9c9ae0e5f29a?q=80&w=600&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1627918838384-ad4b9ddcfb9a?q=80&w=600&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1589156229687-496a31ad1d1f?q=80&w=600&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1610488663486-dafc48cc26e3?q=80&w=600&auto=format&fit=crop"
+    "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1200&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1200&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?q=80&w=1200&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1504593811423-6dd665756598?q=80&w=1200&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1521119989659-a83eee488004?q=80&w=1200&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1200&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1200&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=1200&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?q=80&w=1200&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1200&auto=format&fit=crop"
   ];
 
   const [radius, setRadius] = useState(300);
@@ -26,7 +28,7 @@ const CylinderGallery = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      setRadius(window.innerWidth < 768 ? 220 : 450);
+      setRadius(window.innerWidth < 768 ? 285 : 475);
     };
     handleResize();
     window.addEventListener('resize', handleResize);
@@ -86,7 +88,7 @@ const CylinderGallery = () => {
                 transform: `rotateY(${angle}deg) translateZ(${radius}px)`,
               }}
             >
-              <img src={src} alt="Model" className="w-full h-full object-cover filter grayscale opacity-30 md:grayscale md:hover:grayscale-0 md:opacity-100 transition-all duration-500 rounded-sm pointer-events-none" />
+              <img src={src} alt="Model" className="w-full h-full object-cover filter grayscale opacity-30 md:grayscale md:hover:grayscale-0 md:opacity-100 transition-all duration-500 rounded-xl pointer-events-none" />
             </div>
           );
         })}
