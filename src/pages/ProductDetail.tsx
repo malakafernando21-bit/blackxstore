@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { products } from "@/lib/data";
+import { useProductsStore } from "@/store/products";
 import { useCartStore } from "@/store/cart";
 import { useWishlistStore } from "@/store/wishlist";
 import { useState, useRef, useEffect } from "react";
@@ -11,16 +11,22 @@ import { VirtualFittingRoom } from "@/components/VirtualFittingRoom";
 export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const products = useProductsStore(state => state.products);
   const product = products.find(p => p.id === id);
   const addItem = useCartStore(state => state.addItem);
-  const { toggleWishlist, isInWishlist } = useWishlistStore(state => ({
-    toggleWishlist: () => {
-      if (product) {
-        state.isInWishlist(product.id) ? state.removeItem(product.id) : state.addItem(product);
+  const addItemToWishlist = useWishlistStore(state => state.addItem);
+  const removeItemFromWishlist = useWishlistStore(state => state.removeItem);
+  const isInWishlist = useWishlistStore(state => product ? state.isInWishlist(product.id) : false);
+
+  const toggleWishlist = () => {
+    if (product) {
+      if (isInWishlist) {
+        removeItemFromWishlist(product.id);
+      } else {
+        addItemToWishlist(product);
       }
-    },
-    isInWishlist: product ? state.isInWishlist(product.id) : false
-  }));
+    }
+  };
   
   const [selectedSize, setSelectedSize] = useState('M');
   const [isFittingRoomOpen, setIsFittingRoomOpen] = useState(false);

@@ -6,7 +6,8 @@ import { cn } from '@/lib/utils';
 import { useEffect } from 'react';
 
 export function CartSlideover({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
-  const { items, removeItem, updateQuantity, subtotal } = useCartStore();
+  const { items, removeItem, updateQuantity } = useCartStore();
+  const subtotal = items.reduce((total, item) => total + (item.price * item.quantity), 0);
   const navigate = useNavigate();
 
   // Prevent scrolling when cart is open

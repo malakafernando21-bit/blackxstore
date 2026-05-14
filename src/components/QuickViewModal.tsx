@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X } from 'lucide-react';
-import { Product } from '@/lib/data';
+import { Product } from '@/store/cart';
 import { useCartStore } from '@/store/cart';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';

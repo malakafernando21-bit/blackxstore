@@ -1,10 +1,34 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Package, Plus, Search, LogOut } from "lucide-react";
-import { products } from "@/lib/data";
+import { Package, Plus, Search, LogOut, Trash2 } from "lucide-react";
+import { useProductsStore } from "@/store/products";
+import { AdminProductModal } from "@/components/AdminProductModal";
+import { type Product } from "@/store/cart";
 
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { products, addProduct, updateProduct, deleteProduct } = useProductsStore();
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+
+  const handleAddProduct = () => {
+    setEditingProduct(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEditProduct = (product: Product) => {
+    setEditingProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveProduct = (product: Product) => {
+    if (editingProduct) {
+      updateProduct(product.id, product);
+    } else {
+      addProduct(product);
+    }
+  };
 
   if (!isAuthenticated) {
     return (
@@ -58,14 +82,33 @@ export default function AdminDashboard() {
 
         {/* Main Content */}
         <div className="flex-1 p-6 md:p-12 overflow-y-auto">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-12">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8">
             <div>
               <h1 className="font-serif text-3xl uppercase tracking-widest">Inventory</h1>
               <p className="text-white/50 text-xs tracking-widest mt-2 uppercase">Manage your collections</p>
             </div>
-            <button className="bg-white text-black px-6 py-3 uppercase tracking-widest font-semibold flex items-center gap-2 hover:bg-gray-200 transition-colors text-xs">
+            <button onClick={handleAddProduct} className="bg-white text-black px-6 py-3 uppercase tracking-widest font-semibold flex items-center gap-2 hover:bg-gray-200 transition-colors text-xs">
               <Plus size={16} /> Add Product
             </button>
+          </div>
+
+          {/* Metric Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div className="bg-[#0a0a0a] border border-white/5 p-6 rounded-sm">
+              <h3 className="text-white/50 text-xs tracking-widest uppercase mb-4">Total Revenue</h3>
+              <p className="font-sans text-3xl font-light text-white">$24,500</p>
+              <span className="text-green-500 text-xs mt-2 inline-block">+12% this month</span>
+            </div>
+            <div className="bg-[#0a0a0a] border border-white/5 p-6 rounded-sm">
+              <h3 className="text-white/50 text-xs tracking-widest uppercase mb-4">Orders</h3>
+              <p className="font-sans text-3xl font-light text-white">156</p>
+              <span className="text-white/50 text-xs mt-2 inline-block">24 pending shipment</span>
+            </div>
+            <div className="bg-[#0a0a0a] border border-white/5 p-6 rounded-sm">
+              <h3 className="text-white/50 text-xs tracking-widest uppercase mb-4">Low Stock</h3>
+              <p className="font-sans text-3xl font-light text-white">3</p>
+              <span className="text-red-400 text-xs mt-2 inline-block">Items need restock</span>
+            </div>
           </div>
 
           <div className="bg-[#0a0a0a] border border-white/5 rounded-sm overflow-hidden">
@@ -103,9 +146,16 @@ export default function AdminDashboard() {
                           {Math.floor(Math.random() * 50) + 5} in stock
                         </span>
                       </td>
-                      <td className="p-6 text-right">
-                        <button className="text-white/40 hover:text-white uppercase tracking-widest text-[10px] underline underline-offset-4 transition-colors">
+                      <td className="p-6 text-right space-x-4">
+                        <button onClick={() => handleEditProduct(product)} className="text-white/40 hover:text-white uppercase tracking-widest text-[10px] underline underline-offset-4 transition-colors">
                           Edit
+                        </button>
+                        <button onClick={() => {
+                          if (window.confirm('Are you sure you want to delete this product?')) {
+                            deleteProduct(product.id);
+                          }
+                        }} className="text-red-400 hover:text-red-300 uppercase tracking-widest text-[10px] underline underline-offset-4 transition-colors">
+                          Delete
                         </button>
                       </td>
                     </tr>
@@ -116,6 +166,13 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+      
+      <AdminProductModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveProduct}
+        editingProduct={editingProduct}
+      />
     </div>
   );
 }

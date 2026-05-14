@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'motion/react';
 import { X, Upload, ZoomIn, RotateCw } from 'lucide-react';
 import { Product } from '@/lib/data';

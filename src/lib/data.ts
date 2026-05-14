@@ -1,5 +1,6 @@
 import { Product } from '../store/cart';
 
+export type { Product };
 export const products: Product[] = [
   {
     id: "p_1",

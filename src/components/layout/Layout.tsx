@@ -10,8 +10,8 @@ import { CartSlideover } from "@/components/CartSlideover";
 export function Navbar({ onOpenCart }: { onOpenCart: () => void }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const cartItemCount = useCartStore((state) => state.itemCount);
-  const wishlistItemCount = useWishlistStore((state) => state.itemCount);
+  const cartItemCount = useCartStore((state) => state.items.reduce((total, item) => total + item.quantity, 0));
+  const wishlistItemCount = useWishlistStore((state) => state.items.length);
 
   useEffect(() => {
     const handleScroll = () => {

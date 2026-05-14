@@ -1,5 +1,5 @@
 import { useCartStore } from "@/store/cart";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { CheckCircle2, ChevronRight } from "lucide-react";
 import { motion } from "motion/react";

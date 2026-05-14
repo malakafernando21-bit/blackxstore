@@ -1,13 +1,13 @@
 import { motion, useScroll, useTransform } from "motion/react";
 import { Link } from "react-router-dom";
-import { products, Product } from "@/lib/data";
-import { useCartStore } from "@/store/cart";
+import { useProductsStore } from "@/store/products";
+import { type Product, useCartStore } from "@/store/cart";
 import { useWishlistStore } from "@/store/wishlist";
-import { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { ShoppingBag, Eye, Heart } from "lucide-react";
 import { QuickViewModal } from "@/components/QuickViewModal";
 
-const ProductSkeleton = ({ index, getGridClass }: { index: number, getGridClass: (index: number) => string }) => {
+const ProductSkeleton = ({ index, getGridClass }: { key?: React.Key; index: number, getGridClass: (index: number) => string }) => {
   return (
     <div className={`relative rounded-sm overflow-hidden bg-[#111] animate-pulse ${getGridClass(index)}`}>
       <div className="absolute top-6 right-6 md:top-8 md:right-8 w-16 h-8 bg-white/10" />
@@ -21,16 +21,30 @@ const ProductSkeleton = ({ index, getGridClass }: { index: number, getGridClass:
 
 const ProductCard = ({ product, index, addItem, setQuickViewProduct, getGridClass, getTransformOrigin }: any) => {
   const cardRef = useRef(null);
+  const imgRef = useRef<HTMLImageElement>(null);
   const [imageLoaded, setImageLoaded] = useState(false);
   const { scrollYProgress } = useScroll({
     target: cardRef,
     offset: ["start end", "end start"],
   });
   
-  const { toggleWishlist, isInWishlist } = useWishlistStore(state => ({
-    toggleWishlist: () => state.isInWishlist(product.id) ? state.removeItem(product.id) : state.addItem(product),
-    isInWishlist: state.isInWishlist(product.id)
-  }));
+  useEffect(() => {
+    if (imgRef.current?.complete) {
+      setImageLoaded(true);
+    }
+  }, []);
+
+  const addItemToWishlist = useWishlistStore(state => state.addItem);
+  const removeItemFromWishlist = useWishlistStore(state => state.removeItem);
+  const isInWishlist = useWishlistStore(state => state.isInWishlist(product.id));
+
+  const toggleWishlist = () => {
+    if (isInWishlist) {
+      removeItemFromWishlist(product.id);
+    } else {
+      addItemToWishlist(product);
+    }
+  };
 
   const y = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"]);
 
@@ -54,12 +68,14 @@ const ProductCard = ({ product, index, addItem, setQuickViewProduct, getGridClas
             <div className="absolute inset-0 bg-[#222] animate-pulse" />
           )}
           <motion.img 
+            ref={imgRef}
             style={{ y }}
             src={product.image} 
             alt={product.name} 
             loading="lazy"
             onLoad={() => setImageLoaded(true)}
-            className={`absolute top-[-15%] left-0 w-full h-[130%] object-cover transition-all duration-[1.5s] ease-in-out ${imageLoaded ? 'opacity-100 brightness-50 group-hover:brightness-90' : 'opacity-0'}`} 
+            onError={() => setImageLoaded(true)}
+            className="absolute top-[-15%] left-0 w-full h-[130%] object-cover brightness-50 group-hover:brightness-90 transition-all duration-[1.5s] ease-in-out" 
           />
         </div>
         
@@ -128,6 +144,7 @@ const ProductCard = ({ product, index, addItem, setQuickViewProduct, getGridClas
 
 export default function Shop() {
   const addItem = useCartStore((state) => state.addItem);
+  const products = useProductsStore((state) => state.products);
   const containerRef = useRef(null);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
