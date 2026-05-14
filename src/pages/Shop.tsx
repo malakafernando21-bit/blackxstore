@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion, useScroll, useTransform, useMotionValue, useAnimationFrame } from "motion/react";
 import { Link } from "react-router-dom";
 import { useProductsStore } from "@/store/products";
 import { type Product, useCartStore } from "@/store/cart";
@@ -6,6 +6,94 @@ import { useWishlistStore } from "@/store/wishlist";
 import React, { useRef, useState, useEffect } from "react";
 import { ShoppingBag, Eye, Heart } from "lucide-react";
 import { QuickViewModal } from "@/components/QuickViewModal";
+
+const CylinderGallery = () => {
+  const images = [
+    "https://images.unsplash.com/photo-1509319117193-57bab727e09d?q=80&w=600&auto=format&fit=crop", 
+    "https://images.unsplash.com/photo-1508243529287-e21914733111?q=80&w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1550246140-5119ae4790b8?q=80&w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1588665046200-a548b81db8b5?q=80&w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1507314986167-9c9ae0e5f29a?q=80&w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1627918838384-ad4b9ddcfb9a?q=80&w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1589156229687-496a31ad1d1f?q=80&w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1610488663486-dafc48cc26e3?q=80&w=600&auto=format&fit=crop"
+  ];
+
+  const [radius, setRadius] = useState(300);
+  const rotation = useMotionValue(0);
+  const isDragging = useRef(false);
+  const lastX = useRef(0);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setRadius(window.innerWidth < 768 ? 220 : 450);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useAnimationFrame((_, delta) => {
+    if (!isDragging.current) {
+      rotation.set(rotation.get() - (15 * delta / 1000));
+    }
+  });
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    isDragging.current = true;
+    lastX.current = e.clientX;
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isDragging.current) return;
+    const deltaX = e.clientX - lastX.current;
+    rotation.set(rotation.get() + deltaX * 0.4);
+    lastX.current = e.clientX;
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    isDragging.current = false;
+    (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+  };
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+      className="w-full h-[60vh] md:h-[80vh] flex items-center justify-center overflow-hidden [perspective:1000px] mb-24 relative touch-none select-none"
+    >
+      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black to-transparent z-10 pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black to-transparent z-10 pointer-events-none" />
+      
+      <motion.div 
+        className="relative w-[180px] md:w-[300px] h-[270px] md:h-[450px] cursor-grab active:cursor-grabbing"
+        style={{ transformStyle: 'preserve-3d', rotateY: rotation }}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+      >
+        {images.map((src, i) => {
+          const angle = (i / images.length) * 360;
+          return (
+            <div
+              key={i}
+              className="absolute top-0 left-0 w-full h-full pointer-events-none"
+              style={{
+                backfaceVisibility: 'hidden',
+                transform: `rotateY(${angle}deg) translateZ(${radius}px)`,
+              }}
+            >
+              <img src={src} alt="Model" className="w-full h-full object-cover filter grayscale opacity-30 md:grayscale md:hover:grayscale-0 md:opacity-100 transition-all duration-500 rounded-sm pointer-events-none" />
+            </div>
+          );
+        })}
+      </motion.div>
+    </motion.div>
+  );
+};
 
 const ProductSkeleton = () => {
   return (
@@ -131,7 +219,8 @@ export default function Shop() {
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
   return (
-    <div className="min-h-screen bg-black pt-32 px-4 md:px-12 pb-32">
+    <div className="min-h-screen bg-black pt-32 px-4 md:px-12 pb-32 overflow-hidden">
+      <CylinderGallery />
       <div className="max-w-[1800px] mx-auto">
         <div className="mb-16 md:mb-24 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>

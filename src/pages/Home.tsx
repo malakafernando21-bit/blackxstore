@@ -23,10 +23,34 @@ export default function Home() {
         
         <div className="relative z-20 text-center px-4 w-full flex flex-col items-center">
           <motion.div
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: [0, 1, 0.7] }}
-            transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-            className="w-40 h-40 md:w-64 md:h-64 mb-6"
+            initial={{ 
+              opacity: 0, 
+              scale: 5, 
+              rotateX: 180,
+              rotateY: 180,
+              rotateZ: 360,
+              x: '100vw', 
+              y: '-100vh',
+              skewX: 45,
+              filter: 'blur(20px)'
+            }}
+            animate={{ 
+              opacity: [0, 0.8, 1, 1],
+              scale: [5, 0.2, 1.5, 1],
+              rotateX: [180, 0, 0, 0],
+              rotateY: [180, 0, 0, 0],
+              rotateZ: [360, -180, 45, 0],
+              x: ['100vw', '-30vw', '10vw', '0vw'],
+              y: ['-100vh', '50vh', '-10vh', '0vh'],
+              skewX: [45, -45, 10, 0],
+              filter: ['blur(20px)', 'blur(5px)', 'blur(0px)', 'blur(0px)']
+            }}
+            transition={{
+              duration: 3,
+              times: [0, 0.5, 0.8, 1],
+              ease: "backInOut"
+            }}
+            className="w-40 h-40 md:w-64 md:h-64 mb-6 relative"
           >
             <motion.div
               animate={{ 
@@ -61,9 +85,9 @@ export default function Home() {
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            className="font-serif text-[15vw] md:text-[10vw] leading-none text-white uppercase tracking-tighter"
+            className="font-serif text-[15vw] md:text-[10vw] leading-none text-white uppercase tracking-tighter flex items-baseline justify-center"
           >
-            BlackX
+            BLACK<span className="text-[1.25em] leading-none ml-1 md:ml-2">X</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0 }}

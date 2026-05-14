@@ -12,11 +12,11 @@ export default function Checkout() {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen pt-32 px-6 flex items-center justify-center bg-black">
+      <div className="min-h-screen pt-32 px-6 flex flex-col items-center justify-center bg-black overflow-hidden relative">
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="text-center max-w-md"
+          className="text-center max-w-md relative z-10"
         >
           <CheckCircle2 className="w-16 h-16 mx-auto mb-6 text-white" />
           <h1 className="font-serif text-3xl uppercase tracking-widest mb-4">Order Placed</h1>
@@ -30,6 +30,47 @@ export default function Checkout() {
             Return to Home
           </button>
         </motion.div>
+
+        {/* Animated Moving Truck */}
+        <div className="mt-16 w-full max-w-lg flex justify-center border-b border-white/20 pb-1 relative overflow-visible h-32">
+           <motion.div
+             initial={{ x: 0 }}
+             animate={{ x: "-100vw" }}
+             transition={{ duration: 2.5, delay: 2.2, ease: "easeIn" }}
+             className="relative w-[180px] h-[70px] mt-auto"
+           >
+             {/* Package Drop */}
+             <motion.div
+               initial={{ y: -150, rotate: 20, opacity: 0 }}
+               animate={{ y: 22, rotate: 0, opacity: 1 }}
+               transition={{ duration: 1, delay: 0.5, type: "spring", bounce: 0.6 }}
+               className="absolute left-[85px] top-0 w-8 h-8 border border-white/50 bg-[#111] flex items-center justify-center shadow-lg"
+             >
+               <span className="text-white/80 text-[10px] font-serif">X</span>
+             </motion.div>
+
+             {/* Lorry SVG Pointing Left */}
+             <svg className="absolute inset-0 z-10 drop-shadow-xl" width="180" height="70" viewBox="0 0 180 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* Back Box Container */}
+                <path d="M80 15 L140 15 L140 55 L80 55 Z" fill="#050505" stroke="white" strokeWidth="2" />
+                <path d="M140 15 L150 5 L150 45 L140 55" fill="#111" stroke="white" strokeWidth="1" />
+                
+                {/* Front Cabin */}
+                <path d="M80 25 L65 25 L50 35 L20 35 C15 35 10 40 10 48 V55 H80 Z" fill="#0A0A0A" stroke="white" strokeWidth="2" strokeLinejoin="round"/>
+                
+                {/* Window */}
+                <path d="M65 27 L53 35 H75 V28 Z" fill="#222" stroke="white" strokeWidth="1" />
+                
+                {/* Wheels */}
+                <circle cx="35" cy="55" r="8" fill="#111" stroke="white" strokeWidth="2" />
+                <circle cx="95" cy="55" r="8" fill="#111" stroke="white" strokeWidth="2" />
+                <circle cx="125" cy="55" r="8" fill="#111" stroke="white" strokeWidth="2" />
+                
+                {/* Branding marking */}
+                <text x="110" y="42" fill="white" fontSize="11" fontFamily="serif" textAnchor="middle" letterSpacing="0.15em">BLACKX</text>
+             </svg>
+           </motion.div>
+        </div>
       </div>
     );
   }
