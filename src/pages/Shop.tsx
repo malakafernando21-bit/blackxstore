@@ -21,6 +21,7 @@ const ProductSkeleton = ({ index, getGridClass }: { index: number, getGridClass:
 
 const ProductCard = ({ product, index, addItem, setQuickViewProduct, getGridClass, getTransformOrigin }: any) => {
   const cardRef = useRef(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const { scrollYProgress } = useScroll({
     target: cardRef,
     offset: ["start end", "end start"],
@@ -44,16 +45,21 @@ const ProductCard = ({ product, index, addItem, setQuickViewProduct, getGridClas
         delay: (index % 3) * 0.15,
         ease: [0.25, 1, 0.5, 1] 
       }}
-      className={`group relative outline-none rounded-sm overflow-hidden ${getGridClass(index)}`}
+      className={`group relative outline-none rounded-sm overflow-hidden bg-[#111] ${getGridClass(index)}`}
     >
       <Link to={`/product/${product.id}`} className="block w-full h-full relative cursor-pointer overflow-hidden">
         {/* Background Image Wrap with Parallax and Hover Zoom */}
         <div className={`absolute inset-0 w-full h-full scale-110 group-hover:scale-[1.25] transition-transform duration-[2s] ease-[cubic-bezier(0.16,1,0.3,1)] ${getTransformOrigin(index)}`}>
+          {!imageLoaded && (
+            <div className="absolute inset-0 bg-[#222] animate-pulse" />
+          )}
           <motion.img 
             style={{ y }}
             src={product.image} 
             alt={product.name} 
-            className="absolute top-[-15%] left-0 w-full h-[130%] object-cover brightness-50 group-hover:brightness-90 transition-all duration-[1.5s] ease-in-out" 
+            loading="lazy"
+            onLoad={() => setImageLoaded(true)}
+            className={`absolute top-[-15%] left-0 w-full h-[130%] object-cover transition-all duration-[1.5s] ease-in-out ${imageLoaded ? 'opacity-100 brightness-50 group-hover:brightness-90' : 'opacity-0'}`} 
           />
         </div>
         
