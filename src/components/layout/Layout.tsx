@@ -1,17 +1,22 @@
-import { Outlet, Link } from "react-router-dom";
-import { ShoppingBag, Menu, Search, X, Heart } from "lucide-react";
+import { Outlet, Link, useNavigate } from "react-router-dom";
+import { ShoppingBag, Menu, Search, X, Heart, LogOut, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cart";
 import { useWishlistStore } from "@/store/wishlist";
 import { CartSlideover } from "@/components/CartSlideover";
+import { useAuth } from "@/contexts/AuthContext";
+import { auth } from "@/lib/firebase";
+import { signOut } from "firebase/auth";
 
 export function Navbar({ onOpenCart }: { onOpenCart: () => void }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const cartItemCount = useCartStore((state) => state.items.reduce((total, item) => total + item.quantity, 0));
   const wishlistItemCount = useWishlistStore((state) => state.items.length);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,6 +25,11 @@ export function Navbar({ onOpenCart }: { onOpenCart: () => void }) {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    navigate('/');
+  };
 
   return (
     <>
@@ -57,6 +67,16 @@ export function Navbar({ onOpenCart }: { onOpenCart: () => void }) {
               <Link to="/contact" className="text-xs uppercase tracking-[0.2em] font-medium text-white/70 hover:text-white transition-colors">Contact</Link>
             </div>
             
+            {user ? (
+               <button onClick={handleLogout} className="text-white/80 hover:text-white transition-colors">
+                 <LogOut className="w-4 h-4" />
+               </button>
+            ) : (
+               <Link to="/login" className="text-white/80 hover:text-white transition-colors">
+                 <User className="w-4 h-4" />
+               </Link>
+            )}
+
             <button className="text-white/80 hover:text-white transition-colors hidden md:block">
               <Search className="w-4 h-4" />
             </button>
@@ -106,6 +126,11 @@ export function Navbar({ onOpenCart }: { onOpenCart: () => void }) {
                 <Link onClick={() => setIsMobileMenuOpen(false)} to="/shop" className="text-3xl font-serif text-white hover:text-white/70 transition-colors">Shop</Link>
                 <Link onClick={() => setIsMobileMenuOpen(false)} to="/about" className="text-3xl font-serif text-white hover:text-white/70 transition-colors">About</Link>
                 <Link onClick={() => setIsMobileMenuOpen(false)} to="/contact" className="text-3xl font-serif text-white hover:text-white/70 transition-colors">Contact</Link>
+                {user ? (
+                   <button onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }} className="text-3xl font-serif text-white hover:text-white/70 transition-colors">Logout</button>
+                ) : (
+                   <Link onClick={() => setIsMobileMenuOpen(false)} to="/login" className="text-3xl font-serif text-white hover:text-white/70 transition-colors">Login</Link>
+                )}
               </nav>
             </div>
           </motion.div>
