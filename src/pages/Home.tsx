@@ -23,33 +23,9 @@ export default function Home() {
         
         <div className="relative z-20 text-center px-4 w-full flex flex-col items-center">
           <motion.div
-            initial={{ 
-              opacity: 0, 
-              scale: 5, 
-              rotateX: 180,
-              rotateY: 180,
-              rotateZ: 360,
-              x: '100vw', 
-              y: '-100vh',
-              skewX: 45,
-              filter: 'blur(20px)'
-            }}
-            animate={{ 
-              opacity: [0, 0.8, 1, 1],
-              scale: [5, 0.2, 1.5, 1],
-              rotateX: [180, 0, 0, 0],
-              rotateY: [180, 0, 0, 0],
-              rotateZ: [360, -180, 45, 0],
-              x: ['100vw', '-30vw', '10vw', '0vw'],
-              y: ['-100vh', '50vh', '-10vh', '0vh'],
-              skewX: [45, -45, 10, 0],
-              filter: ['blur(20px)', 'blur(5px)', 'blur(0px)', 'blur(0px)']
-            }}
-            transition={{
-              duration: 3,
-              times: [0, 0.5, 0.8, 1],
-              ease: "backInOut"
-            }}
+            initial={{ opacity: 0, scale: 0.9, y: 30 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="w-40 h-40 md:w-64 md:h-64 mb-6 relative"
           >
             <motion.div
