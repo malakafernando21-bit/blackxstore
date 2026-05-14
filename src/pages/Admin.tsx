@@ -1,4 +1,33 @@
-import { useState } from "react";
+import { Pie, Line } from "react-chartjs-2"; // Example analytic libraries
+import { type ChartData } from "chart.js";
+
+const revenueData: ChartData = {
+  labels: ["Electronics", "Fashion", "Groceries"],
+  datasets: [
+    {
+      data: [45, 25, 30],
+      backgroundColor: ["#4caf50", "#2196f3", "#ff9800"],
+    },
+  ],
+};
+
+...
+
+<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+  <div className="bg-[#0a0a0a] border border-gray-600 rounded-lg flex flex-col p-8">
+    <h3 className="text-xs tracking-widest uppercase text-sky-500 mb-5">
+      Total Sales Performance
+    </h3>
+    <Line data={revenueTrendsData} height={400} />
+  </div>
+
+  <div className="flex-1 bg-[#111] rounded-lg p-6">
+    <h3 className="text-xs tracking-widest mb-4 text-indigo-500 uppercase">Top Categories</h3>
+    <Pie data={revenueData} />
+  </div>
+
+  ...
+</div>;import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Package, Plus, Search, LogOut, Trash2 } from "lucide-react";
 import { useProductsStore } from "@/store/products";
